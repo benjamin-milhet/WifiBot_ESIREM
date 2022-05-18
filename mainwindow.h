@@ -25,11 +25,13 @@ private slots:
 
     void on_BWebCam_clicked();
 
+    void on_up_button_pressed();
+
 private:
     Ui::MainWindow *ui;
     QPushButton *connect_b;
     QSlider *speed_slider;
     QPushButton BWebCam;
-    MyRobot rob = MyRobot();
+    MyRobot _robot = MyRobot();
 };
 #endif // MAINWINDOW_H

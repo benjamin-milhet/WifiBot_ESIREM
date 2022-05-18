@@ -22,7 +22,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::handleButton()
 {
-    rob.doConnect();
+    this->_robot.doConnect();
 }
 
 
@@ -30,7 +30,7 @@ void MainWindow::handleButton()
 void MainWindow::value(int value)
 {
     qDebug() << value;
-    rob.DataToSend[6] = value+1;
+    this->_robot.DataToSend[6] = value+1;
 //    short mycrcsend = Crc16(rob.DataToSend.data()+1,6);
 //    rob.DataToSend[7] = (qint64)mycrcsend;
 //    rob.DataToSend[8] = (qint64)(mycrcsend >> 8);
@@ -39,7 +39,31 @@ void MainWindow::value(int value)
 void MainWindow::on_BWebCam_clicked()
 {
     qDebug() << "connection webcam";
-    rob.getWebCam();
+    this->_robot.getWebCam();
 //    rob.getRequest();
+}
+
+
+void MainWindow::on_up_button_pressed()
+{
+    this->_robot.GoForward();
+}
+
+
+void MainWindow::on_left_button_pressed()
+{
+    this->_robot.GoLeft();
+}
+
+
+void MainWindow::on_right_button_pressed()
+{
+    this->_robot.GoRight();
+}
+
+
+void MainWindow::on_down_button_pressed()
+{
+    this->_robot.GoBackward();
 }
 
