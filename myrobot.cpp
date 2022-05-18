@@ -7,10 +7,10 @@ MyRobot::MyRobot(QObject *parent) : QObject(parent) {
     DataToSend.resize(9);
     DataToSend[0] = 255;
     DataToSend[1] = 0x07;
-    DataToSend[2] = (qint64)120;
-    DataToSend[3] = (qint64)(120 >> 8);
-    DataToSend[4] = (qint64)120;
-    DataToSend[5] = (qint64)(120 >> 8);
+    DataToSend[2] = (qint64)230;
+    DataToSend[3] = (qint64)(230 >> 8);
+    DataToSend[4] = (qint64)230;
+    DataToSend[5] = (qint64)(230 >> 8);
     DataToSend[6] = 80+1;
     short mycrcsend = Crc16(DataToSend.data()+1,6);
     DataToSend[7] = (qint64)mycrcsend;
@@ -20,6 +20,7 @@ MyRobot::MyRobot(QObject *parent) : QObject(parent) {
     // setup signal and slot
     connect(TimerEnvoi, SIGNAL(timeout()), this, SLOT(MyTimerSlot())); //Send data to wifibot timer
 }
+
 
 
 void MyRobot::doConnect() {
@@ -93,3 +94,27 @@ short MyRobot::Crc16(char *addr_tab, unsigned char taille_max) {
     }
     return(Crc);
 }
+
+
+void MyRobot::GoLeft(){
+
+}
+
+void MyRobot::GoRight(){
+
+}
+
+void MyRobot::GoForward(){
+
+}
+
+void MyRobot::GoBackward(){
+
+}
+
+void MyRobot::changeSpeed(){
+    
+}
+
+
+

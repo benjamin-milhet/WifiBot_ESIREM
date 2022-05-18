@@ -13,11 +13,13 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    myrobot.cpp
+    myrobot.cpp \
+    myrobotwebcam.cpp
 
 HEADERS += \
     mainwindow.h \
-    myrobot.h
+    myrobot.h \
+    myrobotwebcam.h
 
 FORMS += \
     mainwindow.ui

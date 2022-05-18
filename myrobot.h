@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <QTimer>
 #include <QMutex>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 class MyRobot : public QObject {
     Q_OBJECT
@@ -26,6 +28,13 @@ public slots:
     void bytesWritten(qint64 bytes);
     void readyRead();
     void MyTimerSlot();
+    void getWebCam();
+    void GoLeft();
+    void GoRight();
+    void GoForward();
+    void GoBackward();
+    void changeSpeed();
+    void getRequest() ;
     short Crc16(char *buf, unsigned char len);
 
 private:
