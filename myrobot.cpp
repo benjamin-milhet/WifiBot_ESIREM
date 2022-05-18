@@ -22,6 +22,17 @@ MyRobot::MyRobot(QObject *parent) : QObject(parent) {
 }
 
 
+//void MyRobot::getWebCam() {
+//    socket = new QTcpSocket(this);
+//    socket->connectToHost("192.168.1.106", 8080);
+
+//    if(!socket->waitForConnected(5000)) {
+//        qDebug() << "Error: " << socket->errorString();
+//        return;
+//    }
+//    TimerEnvoi->start(75);
+//}
+
 
 void MyRobot::doConnect() {
     socket = new QTcpSocket(this); // socket creation
@@ -117,4 +128,41 @@ void MyRobot::changeSpeed(){
 }
 
 
+// function to do a get request and get the stream from the camera
+// void MyRobot::getWebCam() {
+//     socket = new QTcpSocket(this);
+//     socket->connectToHost("192.168.1.106:8080");
 
+
+
+// function to do a get request
+void MyRobot::getRequest() {
+    QUrl url("192.168.1.106:8080/?action=stream");
+    QNetworkRequest request(url);
+    QNetworkAccessManager manager;
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QNetworkReply *reply = manager.get(request);
+    connect(reply, SIGNAL(finished()), this, SLOT(getRequestFinished()));
+}
+
+// function to do a get request and display the stream from the camera
+void MyRobot::getWebCam() {
+    socket = new QTcpSocket(this);
+    qDebug() << "connect to 192.168.1.106:8080";
+    socket->connectToHost("192.168.1.106", 8080);
+    qDebug() << "send get request";
+//    connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
+
+    socket->write("GET /?action=stream\r\n");
+    socket->write("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:100.0) Gecko/20100101 Firefox/100.0\r\n");
+    socket->write("Accept: image/avif,image/webp,*/*\r\n");
+    socket->write("Accept-Language: fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3\r\n");
+    socket->write("Accept-Encoding: gzip, deflate\r\n");
+    socket->write("Connection: keep-alive\r\n");
+    socket->write("Referer: http://192.168.1.106:8080/stream.html\r\n");
+    socket->waitForBytesWritten();
+    socket->waitForReadyRead();
+    qDebug() << "readAll";
+    QByteArray data = socket->readAll();
+    qDebug() << data;
+}
