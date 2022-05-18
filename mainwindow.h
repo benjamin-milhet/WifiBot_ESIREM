@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "MyRobot.h"
+#include <qpushbutton.h>
+#include <myrobot.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,12 +18,11 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
-
-    void on_pushButton_2_clicked();
+    void handleButton();
 
 private:
     Ui::MainWindow *ui;
-    MyRobot _robot = MyRobot();
+    QPushButton *connect_b;
+    MyRobot rob = MyRobot();
 };
 #endif // MAINWINDOW_H

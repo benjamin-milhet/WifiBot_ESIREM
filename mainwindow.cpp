@@ -2,11 +2,12 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent),
-      ui(new Ui::MainWindow)
-
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->connect_b = ui->connect_button;
+    connect(connect_b, &QPushButton::released, this, &MainWindow::handleButton);
 }
 
 MainWindow::~MainWindow()
@@ -15,14 +16,8 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::handleButton()
 {
-    this->_robot.doConnect();
-}
-
-
-void MainWindow::on_pushButton_2_clicked()
-{
-    this->_robot.disConnect();
+    rob.doConnect();
 }
 

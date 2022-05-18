@@ -26,6 +26,7 @@ public slots:
     void bytesWritten(qint64 bytes);
     void readyRead();
     void MyTimerSlot();
+    short Crc16(char *buf, unsigned char len);
 
 private:
     QTcpSocket *socket;

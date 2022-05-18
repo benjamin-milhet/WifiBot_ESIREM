@@ -3,17 +3,18 @@
 #include "myrobot.h"
 
 MyRobot::MyRobot(QObject *parent) : QObject(parent) {
-    DataToSend.resize(9);
-    DataToSend[0] = 0xFF;
-    DataToSend[1] = 0x07;
-    DataToSend[2] = 20;
-    DataToSend[3] = 0x0;
-    DataToSend[4] = 20;
-    DataToSend[5] = 0x0;
-    DataToSend[6] = 60;
-    DataToSend[7] = 0x0;
-    DataToSend[8] = 0x0;
 
+    DataToSend.resize(9);
+    DataToSend[0] = 255;
+    DataToSend[1] = 0x07;
+    DataToSend[2] = (qint64)120;
+    DataToSend[3] = (qint64)(120 >> 8);
+    DataToSend[4] = (qint64)120;
+    DataToSend[5] = (qint64)(120 >> 8);
+    DataToSend[6] = 80+1;
+    short mycrcsend = Crc16(DataToSend.data()+1,6);
+    DataToSend[7] = (qint64)mycrcsend;
+    DataToSend[8] = (qint64)(mycrcsend >> 8);
     DataReceived.resize(21);
     TimerEnvoi = new QTimer();
     // setup signal and slot
@@ -68,4 +69,27 @@ void MyRobot::MyTimerSlot() {
     while(Mutex.tryLock());
     socket->write(DataToSend);
     Mutex.unlock();
+}
+
+
+short MyRobot::Crc16(char *addr_tab, unsigned char taille_max) {
+    unsigned int Crc = 0xFFFF;
+    unsigned int Polynome = 0xA001;
+    unsigned int CptOctet = 0;
+    unsigned int CptBit = 0;
+    unsigned int Parity = 0;
+
+    Crc = 0xFFFF;
+    Polynome = 0xA001;
+    for ( CptOctet = 0; CptOctet < taille_max ; CptOctet++) {
+        Crc ^= *(addr_tab + CptOctet);
+
+        for (CptBit = 0; CptBit <= 7; CptBit++)
+        {
+            Parity = Crc;
+            Crc >>= 1;
+            if (Parity%2 == true) Crc ^= Polynome;
+        }
+    }
+    return(Crc);
 }
