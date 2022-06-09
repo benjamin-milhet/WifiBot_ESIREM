@@ -46,24 +46,104 @@ void MainWindow::on_BWebCam_clicked()
 
 void MainWindow::on_up_button_pressed()
 {
+    this->updateSpeedValue();
     this->_robot.GoForward();
 }
 
 
 void MainWindow::on_left_button_pressed()
 {
+    this->updateSpeedValue();
     this->_robot.GoLeft();
 }
 
 
 void MainWindow::on_right_button_pressed()
 {
+    this->updateSpeedValue();
     this->_robot.GoRight();
 }
 
 
 void MainWindow::on_down_button_pressed()
 {
+    this->updateSpeedValue();
     this->_robot.GoBackward();
+}
+
+
+void MainWindow::on_up_button_released()
+{
+    this->_robot.Stop();
+
+}
+
+
+void MainWindow::on_left_button_released()
+{
+    this->_robot.Stop();
+
+}
+
+
+void MainWindow::on_right_button_released()
+{
+    this->_robot.Stop();
+
+}
+
+
+void MainWindow::on_down_button_released()
+{
+     this->_robot.Stop();
+
+}
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    this->_robot.disConnect();
+}
+
+
+void MainWindow::on_speed_slider_valueChanged(int value)
+{
+    this->_robot.setSpeed(value);
+
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    this->updateSpeedValue();
+
+    switch (event->key()) {
+    case Qt::Key_W:
+        this->_robot.GoForward();
+        break;
+    case Qt::Key_S:
+        this->_robot.GoBackward();
+        break;
+    case Qt::Key_A:
+        this->_robot.GoLeft();
+        break;
+    case Qt::Key_D:
+        this->_robot.GoRight();
+        break;
+    default:
+        this->_robot.Stop();
+        break;
+    }
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    this->_robot.Stop();
+}
+
+
+void MainWindow::updateSpeedValue()
+{
+    qDebug() << -(this->_robot.dataLeft->speed);
+    ui->label_3->setText((this->_robot.dataLeft->speed) + "");
 }
 

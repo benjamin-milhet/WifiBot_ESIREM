@@ -24,6 +24,7 @@ public:
     explicit MyRobot(QObject *parent = 0);
     void doConnect();
     void disConnect();
+    int getSpeed();
     QByteArray DataToSend;
     QByteArray DataReceived;
     QMutex Mutex;
@@ -44,6 +45,7 @@ public slots:
     void GoRight();
     void GoForward();
     void GoBackward();
+    void Stop();
     void setSpeed(int s);
     void getRequest() ;
     short Crc16(char *buf, unsigned char len);
