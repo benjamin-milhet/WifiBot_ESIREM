@@ -160,7 +160,7 @@
      <string>Batterie :</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
+   <widget class="QOpenGLWidget" name="openGLWidget">
     <property name="geometry">
      <rect>
       <x>5</x>

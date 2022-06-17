@@ -25,6 +25,7 @@ public:
 public slots:
     void updateWindows(const QByteArray);
 
+
 private slots:
     void handleButton();
     void value(int);
