@@ -37,7 +37,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Up</string>
+     <string>Up (w)</string>
     </property>
    </widget>
    <widget class="QPushButton" name="left_button">
@@ -50,7 +50,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Left</string>
+     <string>Left (a)</string>
     </property>
    </widget>
    <widget class="QPushButton" name="right_button">
@@ -63,7 +63,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Right</string>
+     <string>Right (d)</string>
     </property>
    </widget>
    <widget class="QPushButton" name="down_button">
@@ -76,7 +76,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Down</string>
+     <string>Down (s)</string>
     </property>
    </widget>
    <widget class="QSlider" name="speed_slider">
@@ -124,19 +124,6 @@
      <string>Deconnect</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>460</y>
-      <width>58</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Vitesse : </string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
@@ -150,17 +137,14 @@
      <string>Vitesse : </string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
+   <widget class="QOpenGLWidget" name="openGLWidget">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>460</y>
-      <width>58</width>
-      <height>16</height>
+      <x>140</x>
+      <y>10</y>
+      <width>571</width>
+      <height>361</height>
      </rect>
-    </property>
-    <property name="text">
-     <string>0</string>
     </property>
    </widget>
   </widget>
