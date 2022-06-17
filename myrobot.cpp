@@ -3,19 +3,20 @@
 #include "myrobot.h"
 
 MyRobot::MyRobot(QObject *parent) : QObject(parent) {
-    dataLeft = (dataRobot*) malloc(sizeof(dataRobot));
-    dataRight = (dataRobot*) malloc(sizeof(dataRobot));
+    dataLeft = (dataRobot*) malloc(sizeof(dataRobot)); // Information droite du robot
+    dataRight = (dataRobot*) malloc(sizeof(dataRobot)); // Information gauche du robot
 
+    // Information a envoyer lors de la connextion du robot -> Le robot ne fait rien
     DataToSend.resize(9);
     DataToSend[0] = 0xFF;
     DataToSend[1] = 0x07;
-    DataToSend[2] = 0x0;
+    DataToSend[2] = 0x0; // -> vitesse gauche
     DataToSend[3] = 0x0;
-    DataToSend[4] = 0x0;
+    DataToSend[4] = 0x0; // -> vitesse droite
     DataToSend[5] = 0x0;
-    DataToSend[6] = 0x0;
-    DataToSend[7] = 0x0;
-    DataToSend[8] = 0x0;
+    DataToSend[6] = 0x0; // -> direction du robot
+    DataToSend[7] = 0x0; // -> crc
+    DataToSend[8] = 0x0; // -> crc
     DataReceived.resize(21);
 
     TimerEnvoi = new QTimer();
@@ -25,7 +26,7 @@ MyRobot::MyRobot(QObject *parent) : QObject(parent) {
 
 
 
-
+// Fonction permettanty de se connecter au robot
 void MyRobot::doConnect() {
     socket = new QTcpSocket(this); // socket creation
     connect(socket, SIGNAL(connected()),this, SLOT(connected()));
@@ -44,6 +45,7 @@ void MyRobot::doConnect() {
 
 }
 
+// Fonction permettant de se deconnecter du robot
 void MyRobot::disConnect() {
     TimerEnvoi->stop();
     socket->close();
@@ -61,6 +63,7 @@ void MyRobot::bytesWritten(qint64 bytes) {
     qDebug() << bytes << " bytes written...";
 }
 
+//Fonction permettant de recuperer les information recu par le robot
 void MyRobot::readyRead() {
     qDebug() << "reading..."; // read the data from the socket
     DataReceived = socket->readAll();
@@ -86,9 +89,13 @@ void MyRobot::readyRead() {
     dataRight->odometry = ((( (long) DataReceived[16] << 24)) + (( (long) DataReceived[15] << 16)) + (( (long) DataReceived[14] << 8))+( (long) DataReceived[13]));
 
     qDebug() << "--------------";
+    qDebug() << DataReceived[2];
     qDebug() << dataLeft->batterie;
     qDebug() << dataRight->batterie;
     qDebug() << dataLeft->speed;
+
+    emit updateUI(DataReceived); // On envoi les informations a la mainwindow pour update les infos
+
 
 }
 
@@ -99,7 +106,7 @@ void MyRobot::MyTimerSlot() {
     Mutex.unlock();
 }
 
-
+//Fonction permettant de calculer le crc pour controler les data envoyer
 short MyRobot::Crc16(char *addr_tab, unsigned char taille_max) {
     unsigned int Crc = 0xFFFF;
     unsigned int Polynome = 0xA001;
@@ -122,15 +129,10 @@ short MyRobot::Crc16(char *addr_tab, unsigned char taille_max) {
     return(Crc);
 }
 
-
+// Permet au robot de se deplacer a gauche
 void MyRobot::GoLeft() {
-    DataToSend.resize(9);
-    DataToSend[0] = 0xFF;
-    DataToSend[1] = 0x07;
     DataToSend[2] = this->speed;
-    DataToSend[3] = 0;
     DataToSend[4] = this->speed;
-    DataToSend[5] = 0;
     DataToSend[6] = 16;
 
     short mycrcsend = Crc16(DataToSend.data(), 7);
@@ -138,14 +140,10 @@ void MyRobot::GoLeft() {
     DataToSend[8] = mycrcsend >> 8;
 }
 
+// Permet au robot de se deplacer a droite
 void MyRobot::GoRight() {
-    DataToSend.resize(9);
-    DataToSend[0] = 0xFF;
-    DataToSend[1] = 0x07;
     DataToSend[2] = this->speed;
-    DataToSend[3] = 0;
     DataToSend[4] = this->speed;
-    DataToSend[5] = 0;
     DataToSend[6] = 64;
 
     short mycrcsend = Crc16(DataToSend.data(), 7);
@@ -153,6 +151,7 @@ void MyRobot::GoRight() {
     DataToSend[8] = mycrcsend >> 8;
 }
 
+// Permet au robot de se deplacer a en avant
 void MyRobot::GoForward() {
     DataToSend[2] = this->speed;
     DataToSend[4] = this->speed;
@@ -164,14 +163,10 @@ void MyRobot::GoForward() {
 
 }
 
+// Permet au robot de se deplacer a gauche
 void MyRobot::GoBackward() {
-    DataToSend.resize(9);
-    DataToSend[0] = 0xFF;
-    DataToSend[1] = 0x07;
     DataToSend[2] = this->speed;
-    DataToSend[3] = 0;
     DataToSend[4] = this->speed;
-    DataToSend[5] = 0;
     DataToSend[6] = 0;
 
     short mycrcsend = Crc16(DataToSend.data(), 7);
@@ -179,6 +174,7 @@ void MyRobot::GoBackward() {
     DataToSend[8] = mycrcsend >> 8;
 }
 
+// Permet d'arreter le robot
 void MyRobot::Stop() {
     DataToSend.resize(9);
     DataToSend[0] = 0xFF;
@@ -194,50 +190,14 @@ void MyRobot::Stop() {
     DataToSend[8] = (qint64)(mycrcsend >> 8);
 }
 
+//Permet de changer la vitesse
 void MyRobot::setSpeed(int s){
     this->speed = s;
 }
 
+//Permet de recueprer la vitesse
 int MyRobot::getSpeed() {
     return this->speed;
 }
 
 
-// function to do a get request and get the stream from the camera
-// void MyRobot::getWebCam() {
-//     socket = new QTcpSocket(this);
-//     socket->connectToHost("192.168.1.106:8080");
-
-
-
-// function to do a get request
-void MyRobot::getRequest() {
-    QUrl url("192.168.1.106:8080/?action=stream");
-    QNetworkRequest request(url);
-    QNetworkAccessManager manager;
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    QNetworkReply *reply = manager.get(request);
-    connect(reply, SIGNAL(finished()), this, SLOT(getRequestFinished()));
-}
-
-// function to do a get request and display the stream from the camera
-void MyRobot::getWebCam() {
-    socket = new QTcpSocket(this);
-    qDebug() << "connect to 192.168.1.106:8080";
-    socket->connectToHost("192.168.1.106", 8080);
-    qDebug() << "send get request";
-//    connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
-
-    socket->write("GET /?action=stream\r\n");
-    socket->write("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:100.0) Gecko/20100101 Firefox/100.0\r\n");
-    socket->write("Accept: image/avif,image/webp,*/*\r\n");
-    socket->write("Accept-Language: fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3\r\n");
-    socket->write("Accept-Encoding: gzip, deflate\r\n");
-    socket->write("Connection: keep-alive\r\n");
-    socket->write("Referer: http://192.168.1.106:8080/stream.html\r\n");
-    socket->waitForBytesWritten();
-    socket->waitForReadyRead();
-    qDebug() << "readAll";
-    QByteArray data = socket->readAll();
-    qDebug() << data;
-}

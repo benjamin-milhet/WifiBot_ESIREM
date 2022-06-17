@@ -40,14 +40,12 @@ public slots:
     void bytesWritten(qint64 bytes);
     void readyRead();
     void MyTimerSlot();
-    void getWebCam();
     void GoLeft();
     void GoRight();
     void GoForward();
     void GoBackward();
     void Stop();
     void setSpeed(int s);
-    void getRequest() ;
     short Crc16(char *buf, unsigned char len);
 
 private:

@@ -23,6 +23,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 public slots:
+    void updateWindows(const QByteArray);
+
 
 private slots:
     void handleButton();
@@ -50,6 +52,13 @@ private slots:
 
     void on_speed_slider_valueChanged(int value);
 
+    void on_left_button_2_clicked();
+
+    void on_up_button_2_clicked();
+
+    void on_right_button_2_clicked();
+
+    void on_down_button_2_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -62,6 +71,10 @@ private:
     void keyReleaseEvent(QKeyEvent *event);
     QLCDNumber *lcdBattery;
     QLCDNumber *lcdSpeed;
+    QLCDNumber *IRHautGauche;
+    QLCDNumber *IRHautDroit;
+    QLCDNumber *IRBas;
+
     QWebEngineView *view;
 
 
