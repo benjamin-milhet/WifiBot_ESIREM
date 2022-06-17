@@ -37,7 +37,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Up</string>
+     <string>Up (w)</string>
     </property>
    </widget>
    <widget class="QPushButton" name="left_button">
@@ -50,7 +50,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Left</string>
+     <string>Left (a)</string>
     </property>
    </widget>
    <widget class="QPushButton" name="right_button">
@@ -63,7 +63,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Right</string>
+     <string>Right (d)</string>
     </property>
    </widget>
    <widget class="QPushButton" name="down_button">
@@ -76,14 +76,14 @@
      </rect>
     </property>
     <property name="text">
-     <string>Down</string>
+     <string>Down (s)</string>
     </property>
    </widget>
    <widget class="QSlider" name="speed_slider">
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>380</y>
+      <y>370</y>
       <width>18</width>
       <height>160</height>
      </rect>
@@ -124,43 +124,170 @@
      <string>Deconnect</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>460</y>
-      <width>58</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Vitesse : </string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>450</y>
+      <x>570</x>
+      <y>530</y>
+      <width>51</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Vitesse</string>
+    </property>
+   </widget>
+   <widget class="QOpenGLWidget" name="openGLWidget">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>0</y>
+      <width>571</width>
+      <height>361</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>5</x>
+      <y>10</y>
       <width>58</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Vitesse : </string>
+     <string>Batterie :</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>460</y>
+      <x>5</x>
+      <y>60</y>
       <width>58</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>Vitesse :</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>5</x>
+      <y>110</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>IR Haut Gauche :</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>5</x>
+      <y>160</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>IR Haut Droit :</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>5</x>
+      <y>210</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>IR Bas Gauche :</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="down_button_2">
+    <property name="geometry">
+     <rect>
+      <x>412</x>
+      <y>510</y>
+      <width>91</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Down (down)</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="right_button_2">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>480</y>
+      <width>111</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Right (right)</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="up_button_2">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>450</y>
+      <width>83</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Up (up)</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="left_button_2">
+    <property name="geometry">
+     <rect>
+      <x>362</x>
+      <y>480</y>
+      <width>101</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Left (left)</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>410</y>
+      <width>61</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>WEBCAM</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>685</x>
+      <y>410</y>
+      <width>51</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>ROBOT</string>
     </property>
    </widget>
   </widget>

@@ -4,9 +4,12 @@
 #include <QMainWindow>
 #include <qpushbutton.h>
 #include <myrobot.h>
+#include <myRobotWebCam.h>
 #include <QSlider>
 #include <QDebug>
 #include <QKeyEvent>
+#include <QLCDNumber>
+#include <QWebEngineView>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,6 +22,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+public slots:
+    void updateWindows(const QByteArray);
 
 private slots:
     void handleButton();
@@ -46,16 +51,30 @@ private slots:
 
     void on_speed_slider_valueChanged(int value);
 
-    void updateSpeedValue();
+    void on_left_button_2_clicked();
+
+    void on_up_button_2_clicked();
+
+    void on_right_button_2_clicked();
+
+    void on_down_button_2_clicked();
 
 private:
     Ui::MainWindow *ui;
     QPushButton *connect_b;
     QSlider *speed_slider;
     QPushButton BWebCam;
-    MyRobot _robot = MyRobot();
+    MyRobot *_robot = new MyRobot();
+    myRobotWebCam _webcam = myRobotWebCam();
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
+    QLCDNumber *lcdBattery;
+    QLCDNumber *lcdSpeed;
+    QLCDNumber *IRHautGauche;
+    QLCDNumber *IRHautDroit;
+    QLCDNumber *IRBas;
+
+    QWebEngineView *view;
 
 
 };
