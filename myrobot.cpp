@@ -3,35 +3,27 @@
 #include "myrobot.h"
 
 MyRobot::MyRobot(QObject *parent) : QObject(parent) {
+    dataLeft = (dataRobot*) malloc(sizeof(dataRobot));
+    dataRight = (dataRobot*) malloc(sizeof(dataRobot));
 
     DataToSend.resize(9);
-    DataToSend[0] = 255;
+    DataToSend[0] = 0xFF;
     DataToSend[1] = 0x07;
-    DataToSend[2] = (qint64)230;
-    DataToSend[3] = (qint64)(230 >> 8);
-    DataToSend[4] = (qint64)230;
-    DataToSend[5] = (qint64)(230 >> 8);
-    DataToSend[6] = 80+1;
-    short mycrcsend = Crc16(DataToSend.data()+1,6);
-    DataToSend[7] = (qint64)mycrcsend;
-    DataToSend[8] = (qint64)(mycrcsend >> 8);
+    DataToSend[2] = 0x0;
+    DataToSend[3] = 0x0;
+    DataToSend[4] = 0x0;
+    DataToSend[5] = 0x0;
+    DataToSend[6] = 0x0;
+    DataToSend[7] = 0x0;
+    DataToSend[8] = 0x0;
     DataReceived.resize(21);
+
     TimerEnvoi = new QTimer();
     // setup signal and slot
     connect(TimerEnvoi, SIGNAL(timeout()), this, SLOT(MyTimerSlot())); //Send data to wifibot timer
 }
 
 
-//void MyRobot::getWebCam() {
-//    socket = new QTcpSocket(this);
-//    socket->connectToHost("192.168.1.106", 8080);
-
-//    if(!socket->waitForConnected(5000)) {
-//        qDebug() << "Error: " << socket->errorString();
-//        return;
-//    }
-//    TimerEnvoi->start(75);
-//}
 
 
 void MyRobot::doConnect() {
@@ -72,8 +64,32 @@ void MyRobot::bytesWritten(qint64 bytes) {
 void MyRobot::readyRead() {
     qDebug() << "reading..."; // read the data from the socket
     DataReceived = socket->readAll();
-    emit updateUI(DataReceived);
-    qDebug() << DataReceived[0] << DataReceived[1] << DataReceived[2];
+    //emit updateUI(DataReceived);
+
+    dataLeft->speed = (int)(( DataReceived[1] << 8) + DataReceived[0]);
+    if (dataLeft->speed > 32767) dataLeft->speed = dataLeft->speed - 65536;
+
+    dataLeft->batterie = DataReceived[2];
+    dataLeft->IR1 = DataReceived[3];
+    dataLeft->IR2 = DataReceived[4];
+
+    dataLeft->odometry = ((( (long) DataReceived[8] << 24)) + (( (long) DataReceived[7] << 16))+(( (long) DataReceived[6] << 8))+( (long) DataReceived[5]));
+
+
+    dataRight->speed=(int)(DataReceived[10] << 8) + DataReceived[9];
+    if (dataRight->speed > 32767) dataRight->speed = dataRight->speed - 65536;
+
+    dataRight->batterie = 0;
+    dataRight->IR1 = DataReceived[11];
+    dataRight->IR2 = DataReceived[12];
+
+    dataRight->odometry = ((( (long) DataReceived[16] << 24)) + (( (long) DataReceived[15] << 16)) + (( (long) DataReceived[14] << 8))+( (long) DataReceived[13]));
+
+    qDebug() << "--------------";
+    qDebug() << dataLeft->batterie;
+    qDebug() << dataRight->batterie;
+    qDebug() << dataLeft->speed;
+
 }
 
 void MyRobot::MyTimerSlot() {
@@ -93,8 +109,8 @@ short MyRobot::Crc16(char *addr_tab, unsigned char taille_max) {
 
     Crc = 0xFFFF;
     Polynome = 0xA001;
-    for ( CptOctet = 0; CptOctet < taille_max ; CptOctet++) {
-        Crc ^= *(addr_tab + CptOctet);
+    for ( CptOctet = 1; CptOctet < taille_max ; CptOctet++) {
+        Crc ^= (unsigned char)(addr_tab[CptOctet]);
 
         for (CptBit = 0; CptBit <= 7; CptBit++)
         {
@@ -107,24 +123,83 @@ short MyRobot::Crc16(char *addr_tab, unsigned char taille_max) {
 }
 
 
-void MyRobot::GoLeft(){
+void MyRobot::GoLeft() {
+    DataToSend.resize(9);
+    DataToSend[0] = 0xFF;
+    DataToSend[1] = 0x07;
+    DataToSend[2] = this->speed;
+    DataToSend[3] = 0;
+    DataToSend[4] = this->speed;
+    DataToSend[5] = 0;
+    DataToSend[6] = 16;
+
+    short mycrcsend = Crc16(DataToSend.data(), 7);
+    DataToSend[7] = mycrcsend;
+    DataToSend[8] = mycrcsend >> 8;
+}
+
+void MyRobot::GoRight() {
+    DataToSend.resize(9);
+    DataToSend[0] = 0xFF;
+    DataToSend[1] = 0x07;
+    DataToSend[2] = this->speed;
+    DataToSend[3] = 0;
+    DataToSend[4] = this->speed;
+    DataToSend[5] = 0;
+    DataToSend[6] = 64;
+
+    short mycrcsend = Crc16(DataToSend.data(), 7);
+    DataToSend[7] = mycrcsend;
+    DataToSend[8] = mycrcsend >> 8;
+}
+
+void MyRobot::GoForward() {
+    DataToSend[2] = this->speed;
+    DataToSend[4] = this->speed;
+    DataToSend[6] = 81;
+
+    short mycrcsend = Crc16(DataToSend.data(), 7);
+    DataToSend[7] = mycrcsend;
+    DataToSend[8] = mycrcsend >> 8;
 
 }
 
-void MyRobot::GoRight(){
+void MyRobot::GoBackward() {
+    DataToSend.resize(9);
+    DataToSend[0] = 0xFF;
+    DataToSend[1] = 0x07;
+    DataToSend[2] = this->speed;
+    DataToSend[3] = 0;
+    DataToSend[4] = this->speed;
+    DataToSend[5] = 0;
+    DataToSend[6] = 0;
 
+    short mycrcsend = Crc16(DataToSend.data(), 7);
+    DataToSend[7] = mycrcsend;
+    DataToSend[8] = mycrcsend >> 8;
 }
 
-void MyRobot::GoForward(){
+void MyRobot::Stop() {
+    DataToSend.resize(9);
+    DataToSend[0] = 0xFF;
+    DataToSend[1] = 0x07;
+    DataToSend[2] = 0x0;
+    DataToSend[3] = 0x0;
+    DataToSend[4] = 0x0;
+    DataToSend[5] = 0x0;
+    DataToSend[6] = 80;
 
+    short mycrcsend = Crc16(DataToSend.data()+1,6);
+    DataToSend[7] = (qint64)mycrcsend;
+    DataToSend[8] = (qint64)(mycrcsend >> 8);
 }
 
-void MyRobot::GoBackward(){
-
+void MyRobot::setSpeed(int s){
+    this->speed = s;
 }
 
-void MyRobot::changeSpeed(){
-    
+int MyRobot::getSpeed() {
+    return this->speed;
 }
 
 
